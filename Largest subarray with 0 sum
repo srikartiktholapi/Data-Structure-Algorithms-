@@ -1,0 +1,18 @@
+class Solution:
+    def maxLength(self, arr):
+        maxi = 0
+        mpp ={}
+        n = len(arr)
+        prefix_sum = 0
+        for i in range(n):
+            prefix_sum+=arr[i]
+            if prefix_sum ==0:
+                maxi = i+1
+            elif prefix_sum in mpp:
+                maxi = max(maxi,i-mpp[prefix_sum])
+            else :
+                mpp[prefix_sum]=i
+        
+        return maxi                
+        # code here
+        
