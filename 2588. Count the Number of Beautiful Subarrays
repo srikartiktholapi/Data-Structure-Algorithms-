@@ -1,0 +1,10 @@
+class Solution:
+    def beautifulSubarrays(self, nums: List[int]) -> int:
+        count = 0
+        prefix_XOR = 0
+        freq = {0:1}
+        for num in nums :
+            prefix_XOR ^= num
+            count+=freq.get(prefix_XOR,0)
+            freq[prefix_XOR]=freq.get(prefix_XOR,0)+1
+        return count        
