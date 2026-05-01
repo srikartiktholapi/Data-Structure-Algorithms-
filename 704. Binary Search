@@ -1,0 +1,33 @@
+# 1.Iterative
+class SolutionIterative:
+    def search(self, nums: List[int], target: int) -> int:
+        low, high = 0, len(nums) - 1
+ 
+        while low <= high:
+            mid = (low + high) // 2
+ 
+            if nums[mid] == target:
+                return mid
+            elif target > nums[mid]:
+                low = mid + 1
+            else:
+                high = mid - 1
+ 
+        return -1
+# 2.Recursive
+class SolutionRecursive:
+    def binary_search(self, nums: List[int], low: int, high: int, target: int) -> int:
+        if low > high:          
+            return -1
+ 
+        mid = (low + high) // 2
+ 
+        if nums[mid] == target:
+            return mid
+        elif target > nums[mid]:
+            return self.binary_search(nums, mid + 1, high, target)
+        else:
+            return self.binary_search(nums, low, mid - 1, target)
+ 
+    def search(self, nums: List[int], target: int) -> int:
+        return self.binary_search(nums, 0, len(nums) - 1, target)
