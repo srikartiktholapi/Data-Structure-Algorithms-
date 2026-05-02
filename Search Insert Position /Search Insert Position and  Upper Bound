@@ -1,0 +1,33 @@
+from typing import List
+
+# 1. Search Insert Position - LeetCode 35
+class SearchInsertPosition:
+    def searchInsert(self, nums: List[int], target: int) -> int:
+        low = 0
+        high = len(nums) - 1
+        while low <= high:
+            mid = (low + high) // 2
+            if nums[mid] == target:
+                return mid
+            elif nums[mid] < target:
+                low = mid + 1
+            else:
+                high = mid - 1
+        return low
+
+
+# 2. Upper Bound - GeeksForGeeks
+class UpperBound:
+    def upperBound(self, arr: List[int], target: int) -> int:
+        low = 0
+        n = len(arr)
+        high = n - 1
+        ans = n
+        while low <= high:
+            mid = (low + high) // 2
+            if arr[mid] > target:
+                ans = mid
+                high = mid - 1
+            else:
+                low = mid + 1
+        return ans
