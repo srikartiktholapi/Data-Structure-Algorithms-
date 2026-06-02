@@ -1,0 +1,36 @@
+# Find K Rotation
+
+## Problem
+Given a sorted array that has been rotated clockwise k times, find the value of k (the number of rotations).
+
+## Approach 1: Brute Force
+- Find the minimum element by traversing the entire array.
+- Return its index.
+
+**Time Complexity:** O(N)  
+**Space Complexity:** O(1)
+
+## Approach 2: Binary Search (Optimal)
+- The minimum element in a sorted rotated array represents the rotation count.
+- Use Binary Search to locate the minimum element efficiently.
+
+**Time Complexity:** O(log N)  
+**Space Complexity:** O(1)
+
+## Python Solution
+
+```python
+class Solution:
+    def findKRotation(self, arr):
+        low = 0
+        high = len(arr) - 1
+
+        while low < high:
+            mid = (low + high) // 2
+
+            if arr[mid] > arr[high]:
+                low = mid + 1
+            else:
+                high = mid
+
+        return low
