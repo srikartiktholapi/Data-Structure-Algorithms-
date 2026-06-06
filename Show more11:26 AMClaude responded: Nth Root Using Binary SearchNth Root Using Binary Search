@@ -1,0 +1,30 @@
+class Solution:
+    # Function to find N-th root of M using Binary Search
+    def nthRoot(self, n, m):
+        low, high = 1, m
+
+        while low <= high:
+            mid = (low + high) // 2
+
+            power = 1
+            for _ in range(n):
+                power *= mid
+                if power > m:
+                    break
+
+            if power == m:
+                return mid
+            elif power < m:
+                low = mid + 1
+            else:
+                high = mid - 1
+
+        return -1
+
+
+# Driver Code
+if __name__ == "__main__":
+    obj = Solution()
+
+    print(obj.nthRoot(3, 27))  # Output: 3
+    print(obj.nthRoot(4, 69))  # Output: -1
