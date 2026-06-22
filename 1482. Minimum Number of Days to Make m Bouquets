@@ -1,0 +1,58 @@
+# LeetCode 1482 - Minimum Days to Make M Bouquets
+
+from typing import List
+
+class Solution:
+    def is_possible(self, bloomDay, day, m, k):
+        count = 0
+        bouquets = 0
+        for bloom in bloomDay:
+            if bloom <= day:
+                count += 1
+                if count == k:
+                    bouquets += 1
+                    count = 0
+            else:
+                count = 0
+        return bouquets >= m
+
+    # Brute Force - O(n * (max - min)) time, O(1) space
+    def minDays_brute(self, bloomDay: List[int], m: int, k: int) -> int:
+        total_flowers = m * k
+        if total_flowers > len(bloomDay):
+            return -1
+        low = min(bloomDay)
+        high = max(bloomDay)
+
+        for day in range(low, high + 1):
+            if self.is_possible(bloomDay, day, m, k):
+                return day
+        return -1
+
+    # Optimal (Binary Search) - O(n log n) time, O(1) space
+    def minDays(self, bloomDay: List[int], m: int, k: int) -> int:
+        total_flowers = m * k
+        if total_flowers > len(bloomDay):
+            return -1
+        low = min(bloomDay)
+        high = max(bloomDay)
+        ans = -1
+
+        while low <= high:
+            mid = (low + high) // 2
+            if self.is_possible(bloomDay, mid, m, k):
+                ans = mid
+                high = mid - 1
+            else:
+                low = mid + 1
+        return ans
+
+
+# ---- Test ----
+bloom_days = [7, 7, 7, 7, 13, 11, 12, 7]
+m = 2
+k = 3
+
+sol = Solution()
+print("Brute Force:", sol.minDays_brute(bloom_days, m, k))   # 7
+print("Optimal:    ", sol.minDays(bloom_days, m, k))          # 7
