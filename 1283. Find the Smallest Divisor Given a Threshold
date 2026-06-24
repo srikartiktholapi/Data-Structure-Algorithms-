@@ -1,0 +1,67 @@
+import math
+from typing import List
+
+# ============================================================
+# LeetCode 1283 - Find the Smallest Divisor Given a Threshold
+# ============================================================
+
+# ----------------------------
+# Brute Force Approach
+# Time Complexity  : O(max(nums) * n)
+# Space Complexity : O(1)
+# ----------------------------
+class BruteForce:
+    def smallestDivisor(self, nums: List[int], threshold: int) -> int:
+        if len(nums) > threshold:
+            return -1
+        for div in range(1, max(nums) + 1):
+            total = sum(math.ceil(num / div) for num in nums)
+            if total <= threshold:
+                return div
+        return -1
+
+
+# ----------------------------
+# Optimal Approach — Binary Search on Answer
+# Time Complexity  : O(n * log(max(nums)))
+# Space Complexity : O(1)
+# ----------------------------
+class Optimal:
+    def sum_of_divisor(self, nums: List[int], div: int) -> int:
+        total = 0
+        for num in nums:
+            total += math.ceil(num / div)
+        return total
+
+    def smallestDivisor(self, nums: List[int], threshold: int) -> int:
+        if len(nums) > threshold:
+            return -1
+        low = 1
+        high = max(nums)
+        while low <= high:
+            mid = (low + high) // 2
+            if self.sum_of_divisor(nums, mid) <= threshold:
+                high = mid - 1
+            else:
+                low = mid + 1
+        return low
+
+
+# ----------------------------
+# Test Cases
+# ----------------------------
+if __name__ == "__main__":
+    test_cases = [
+        ([1, 2, 5, 9], 6),      # Expected: 5
+        ([44, 22, 33, 11, 1],   5),  # Expected: 44
+        ([21212, 10101, 12121], 1000000),  # Expected: 1
+    ]
+
+    bf = BruteForce()
+    op = Optimal()
+
+    for nums, threshold in test_cases:
+        print(f"Input: nums={nums}, threshold={threshold}")
+        print(f"  Brute Force : {bf.smallestDivisor(nums, threshold)}")
+        print(f"  Optimal     : {op.smallestDivisor(nums, threshold)}")
+        print()
