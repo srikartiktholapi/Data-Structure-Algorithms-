@@ -1,0 +1,45 @@
+from typing import List
+
+
+class Solution:
+
+    # ---------------- Brute Force ---------------- #
+
+    def daysNeeded(self, weights, capacity):
+        days = 1
+        current_load = 0
+
+        for weight in weights:
+            if current_load + weight > capacity:
+                days += 1
+                current_load = weight
+            else:
+                current_load += weight
+
+        return days
+
+    def shipWithinDays_BruteForce(self, weights: List[int], days: int) -> int:
+        left = max(weights)
+        right = sum(weights)
+
+        for capacity in range(left, right + 1):
+            if self.daysNeeded(weights, capacity) <= days:
+                return capacity
+
+        return right
+
+    # ---------------- Optimal (Binary Search) ---------------- #
+
+    def shipWithinDays(self, weights: List[int], days: int) -> int:
+        left = max(weights)
+        right = sum(weights)
+
+        while left <= right:
+            mid = (left + right) // 2
+
+            if self.daysNeeded(weights, mid) <= days:
+                right = mid - 1
+            else:
+                left = mid + 1
+
+        return left
