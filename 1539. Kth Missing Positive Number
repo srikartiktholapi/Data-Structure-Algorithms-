@@ -1,0 +1,118 @@
+# ============================================================
+# K-th Missing Positive Number
+# LeetCode #1539
+# ============================================================
+# Two approaches:
+#   1. Linear Scan  — O(n)
+#   2. Binary Search — O(log n)
+# ============================================================
+
+from typing import List
+
+
+# ─────────────────────────────────────────────
+# APPROACH 1: Linear Scan — O(n)
+# ─────────────────────────────────────────────
+# Key Idea:
+#   k starts as our target position.
+#   Every time we find a number in arr that is ≤ k,
+#   that number "occupies" a slot, so we push k forward by 1.
+#   When we find a number > k, k itself is missing → return it.
+#
+# Example:
+#   arr = [2, 3, 4, 7, 11], k = 5
+#   num=2 → k becomes 6
+#   num=3 → k becomes 7
+#   num=4 → k becomes 8
+#   num=7 → k becomes 9
+#   num=11 > 9 → return 9
+#
+# Missing numbers: 1, 5, 6, 8, 9 → 5th missing = 9 ✅
+
+class LinearSolution:
+    def findKthPositive(self, arr: List[int], k: int) -> int:
+        for num in arr:
+            if num <= k:
+                k += 1   # this slot is taken, look one further
+            else:
+                break    # k is now in the missing zone
+        return k
+
+
+# ─────────────────────────────────────────────
+# APPROACH 2: Binary Search — O(log n)
+# ─────────────────────────────────────────────
+# Key Idea:
+#   At any index mid, the count of missing numbers =
+#       vec[mid] - (mid + 1)
+#   (because in a perfect array with no gaps, vec[mid] == mid+1)
+#
+#   Binary search finds the boundary where:
+#       missing < k  → not enough missing yet → go right
+#       missing >= k → too many missing       → go left
+#
+#   After the loop, high points to the last index
+#   where missing count < k.
+#   Final answer = k + high + 1
+#
+# Why does k + high + 1 work?
+#   answer = vec[high] + (k - missing_at_high)
+#          = vec[high] + k - (vec[high] - (high+1))
+#          = k + high + 1
+#
+# Example:
+#   vec = [4, 7, 9, 10], k = 4
+#   Index 0 → 3 missing (not enough) → go right
+#   Index 1 → 5 missing (too many)   → go left
+#   Loop ends: high=0
+#   Answer = 4 + 0 + 1 = 5 ✅
+#
+# Missing numbers: 1, 2, 3, 5, 6, 8 → 4th missing = 5 ✅
+
+class BinarySearchSolution:
+    def findKthPositive(self, vec: List[int], k: int) -> int:
+        low, high = 0, len(vec) - 1
+
+        while low <= high:
+            mid = (low + high) // 2
+            missing = vec[mid] - (mid + 1)  # missing count up to mid
+
+            if missing < k:
+                low = mid + 1   # need more missing values, go right
+            else:
+                high = mid - 1  # too many missing, go left
+
+        return k + high + 1  # final answer formula
+
+
+# ─────────────────────────────────────────────
+# TEST CASES
+# ─────────────────────────────────────────────
+
+def run_tests():
+    test_cases = [
+        ([2, 3, 4, 7, 11], 5, 9),   # missing: 1,5,6,8,9
+        ([4, 7, 9, 10],    4, 5),   # missing: 1,2,3,5
+        ([1, 2, 3, 4],     2, 6),   # missing: 5,6,7...
+        ([1, 2, 3, 4],     1, 5),
+        ([2],              1, 1),   # first missing is 1
+    ]
+
+    linear = LinearSolution()
+    binary = BinarySearchSolution()
+
+    print("=" * 55)
+    print(f"{'arr':<25} {'k':<5} {'Expected':<10} {'Linear':<10} {'Binary'}")
+    print("=" * 55)
+
+    for arr, k, expected in test_cases:
+        l_ans = linear.findKthPositive(arr[:], k)   # pass copy since linear modifies k
+        b_ans = binary.findKthPositive(arr, k)
+        status = "✅" if l_ans == expected and b_ans == expected else "❌"
+        print(f"{str(arr):<25} {k:<5} {expected:<10} {l_ans:<10} {b_ans}  {status}")
+
+    print("=" * 55)
+
+
+if __name__ == "__main__":
+    run_tests()
