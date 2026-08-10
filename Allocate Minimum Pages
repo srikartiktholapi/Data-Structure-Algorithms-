@@ -1,0 +1,114 @@
+public class AllocateMinimumPages {
+
+    // Brute Force Approach
+    public static int bruteForce(int[] pages, int students) {
+        int n = pages.length;
+
+        if (students > n) {
+            return -1;
+        }
+
+        int totalPages = 0;
+        int maxPages = 0;
+
+        for (int page : pages) {
+            totalPages += page;
+            maxPages = Math.max(maxPages, page);
+        }
+
+        int answer = totalPages;
+
+        for (int limit = maxPages; limit <= totalPages; limit++) {
+            int studentCount = 1;
+            int currentPages = 0;
+
+            for (int page : pages) {
+                if (currentPages + page <= limit) {
+                    currentPages += page;
+                } else {
+                    studentCount++;
+                    currentPages = page;
+                }
+            }
+
+            if (studentCount <= students) {
+                answer = limit;
+                break;
+            }
+        }
+
+        return answer;
+    }
+
+    // Optimal: Binary Search on Answer
+    public static int binarySearch(int[] pages, int students) {
+        int n = pages.length;
+
+        if (students > n) {
+            return -1;
+        }
+
+        int low = 0;
+        int high = 0;
+
+        for (int page : pages) {
+            low = Math.max(low, page);
+            high += page;
+        }
+
+        int answer = high;
+
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+
+            if (canAllocate(pages, students, mid)) {
+                answer = mid;
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
+        }
+
+        return answer;
+    }
+
+    // Checks whether books can be allocated
+    // to the given number of students with
+    // maximum 'limit' pages per student.
+    private static boolean canAllocate(
+            int[] pages,
+            int students,
+            int limit
+    ) {
+        int studentCount = 1;
+        int currentPages = 0;
+
+        for (int page : pages) {
+
+            if (currentPages + page <= limit) {
+                currentPages += page;
+            } else {
+                studentCount++;
+                currentPages = page;
+
+                if (studentCount > students) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public static void main(String[] args) {
+
+        int[] pages = {12, 34, 67, 90};
+        int students = 2;
+
+        System.out.println("Brute Force Answer: "
+                + bruteForce(pages, students));
+
+        System.out.println("Binary Search Answer: "
+                + binarySearch(pages, students));
+    }
+}
